@@ -1,0 +1,89 @@
+Linux
+1.安装Linux以及SecureCRT（Windows远程连接操作Linux系统）和winscp（用于在Windows和Linux上传输文件，当然你可以通过其他方式通信）
+2.安装JDK并配置环境
+方法一：
+a.（rpm）下载jdk包,先进入到包所在位置，再通过命令 rpm -ivh **
+进行安装。
+b.通过 vi /etc/profile 命令进入配置环境变量
+export JAVA_HOME=/usr/java/jdk1.7.0_79
+export CLASSPATH=.:$JAVA_HOME/jre/lib/rt/jar:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+export PATH=$PATH:$JAVA_HOME
+（注意 ：=号两边不能出现空格）
+方法二：
+a.下载tar.gz文件通过WinSCP上传到linux（也可以在本地下载）
+b.通过tar命令（tar -zxvf *.tar.gz）（此方法是免安装）将解压后的同样配置环境变量，方法一中b相同
+3.安装Tomcat 
+a.解压压缩文件即可
+b. 查看tomcat进程是否存在：ps -ef | grep tomcat
+      查看tomcat运行情况：到tomcat的logs文件夹下面执行：tail -f catalina.out
+   到tomcat的bin目录执行：启动服务：./startup.sh 关闭服务：./shutdown.sh
+基本命令
+
+防火墙的问题
+进入防火墙界面：setup 
+查看防火墙命令：chkconfig --list | grep -i iptables
+关闭防火墙命令：/sbin/service iptables stop
+1)重启后生效 
+　　开启： chkconfig iptables on 
+　　关闭： chkconfig iptables off 
+
+2) 即时生效，重启后失效 
+　　开启： service iptables start 
+　　关闭： service iptables stop
+
+在开启了防火墙时，做如下设置，开启相关端口， 
+　　修改/etc/sysconfig/iptables 文件，添加以下内容： 
+　　-A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j ACCEPT 
+　　-A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT
+
+查看网络连接情况：netstat -nltp
+赋予权限：chmod u+x *.sh
+删除文件：rm -rf *
+杀死进程：kill -9 pid号
+
+ps auxw 可以查看系统所有服务
+ps auxw | grep tomcat可以找出含有tomcat字符的服务
+
+
+1.启动tomcat报如下错时是因为tomcat文件下没有logs文件，在tomcat下新建一个logs文件即可。
+
+常用命令详解
+1.cd
+用于切换目录路径 用法如下
+cd path1 切换到path1下（只能是当前目录的子目录，不然得加/表示绝对路径，可以切换到多级）
+cd .. 切换到上级目录（记得之间加空格同理 cd ../..返回上两级）
+cd （cd ~）与cd / （前两个都是返回到~下面，也就是home，/返回到根目录）
+
+2.ls
+用于列举某个文件夹下的文件和文件夹
+ls 列举当前文件夹下的文件
+ls -a 列举某个文件夹下的所有文件，包含隐藏文件
+ls -l列举某个文件夹下的文件和文件夹的详细信息
+ls 后面可以跟一个文件夹路径指定查询该文件夹 如：ls -a /etc/sysconfig
+
+3.mkdir
+用于创建文件夹，不能创建文件
+mkdir myDocument 创建单个文件夹myDocument
+mkdir -p myDocument/log/privateLog 递归创建多层文件夹
+
+4.vi
+用于编辑文件，当文件不存在则自动创建文件，如下所示是vi中常用的命令
+x 用于删除一个字符
+dd 用于删除一行
+yy p 复制粘贴，只能是一行
+u 恢复上一步
+i 写数据insert
+Esc+：输入文档结束操作（w 保存，q退出(没保存不能退出)，！强制执行） 
+VI其他具体命令请看”linux vi命令.doc”
+
+5.rzsz
+用于本机与linux服务器之间的文件上传下载
+@1.rzsz安装
+$1.下载rzsz.tar.gz文件
+@2.通过tar解包成src文件夹
+@3进入src下通过make查看需要安装哪一个，一般posix就可以了
+@4最后将rz和sz拷贝到/usr/bin下面：cp rz sz /usr/bin/
+
+通过sz从linux服务器下载到本地，一般用法
+sz 文件名
+通过rz选择计较文件提交从本地提交到linux服务器
